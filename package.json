@@ -10,14 +10,14 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:gapline.helloWorld"
+    "onCommand:gapline.lineGapper"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "gapline.helloWorld",
-        "title": "Hello World"
+        "command": "gapline.lineGapper",
+        "title": "Line Gapper"
       }
     ]
   },
