@@ -19,6 +19,8 @@ La instalación de este software resulta sencilla. Únicamente tendremos que acc
 Igual que con la instalación de VS Code, únicamente tendremos que acceder al URL https://nodejs.org/en/download/current/, seleccionar el instalador que requerimos y, una vez terminada su descarga, ejecutaremos su instalador.
 Podemos comprobar si su instalación se realizo de manera correcta al abrir consola o la terminal de VS Code y escribir el comando ``node``.
 
+![Mostrar version instalada](src/resources/Picture%201.png)
+
 ### Paquetes npm
 Se requerirá el uso de dos paquetes npm 
 1. **Yeoman**
@@ -28,8 +30,12 @@ El generador de Yeoman nos guiara a través de los pasos necesarios para crear n
 
 Para poder instalar ambos paguetes, escribiremos en a terminal el comando ``npm install-g yo generator-code typescript``
 
+![Instalacion en terminal](src/resources/Picture%202.png)
+
 ## Desarrollo
 Para la creación del témplate de la nueva extensión utilizaremos el comando ``yo code`` que ejecutara el generador de extensiones para VS Code y aplicaremos la configuración requerida.
+
+![Generador de extension y sus valores](src/resources/Picture%203.png)
 
 Se sustituirá el contenido del archivo _extensión.ts_ por el siguiente código que es referente al funcionamiento de la extensión que queremos utilizar
 
@@ -69,9 +75,16 @@ export function deactivate() { }
 
 Así como se deberá de cambiar en el archivo _tsconfig.json_ el valor del _‘strict’_ 
 
+![Cambio de valor 'strict'](src/resources/Picture%204.png)
+
 ## Resultados
 Para poder ejecutar el codigo, deberemos seguir los siguientes pasos: 
 1. Presionar la tecla F5 o iniciar depuracion a traves del menu run.
+![Ejecutar codigo](src/resources/Picture%205.png)
 2. Tras abrir la ventana con la extension precargada, abriremos un fichero de texto, seleccionaremos su contenido y pulsaremos Ctrl + Shift + P e introduciremos el nombre de la extension (``Line Gapper``)
+![Nueva ventana precargada](src/resources/Picture%206.png)
+![Ejecutar extension](src/resources/Picture%207.png)
 3. Al ubicar la extension, nos solicitara cada cuantas lineas querremos inssertar la linea en blanco.
+![Introducir valor](src/resources/Picture%208.png)
 4. Nos devolvera el resultado sobre el texto seleccionado
+![Texto retornado](src/resources/Picture%209.png)
