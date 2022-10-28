@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
                 // Reemplaza el texto seleccionado con el array que se unio
                 editBuilder.replace(range, text);
             });
-        })
+        });
     });
 
     // Elimina, por decirlo de una forma, los archivos temporales al cerrar la extension
