@@ -1,71 +1,77 @@
-# gapline README
+# Creación de una extensión para Visual Studio Code
+## Objetivo
+Se desea practicar la programación en JavaScript (y conocer de paso TypeScript) y aplicarlo de manera novedosa.  De manera paralela, vamos a trabajar con otras tecnologías modernas muy usadas hoy en día en el desarrollo web, tales como generadores y gestores de paquetes.
+## Introducción
+En este ejercicio proponemos crear una extensión para el conocidísimo editor de texto de Microsoft:  Visual Studio Code.  Esta extensión va a hacer una cosa muy sencilla: insertar una línea en blanco cada N líneas.
+Veremos detalladamente la instalación y configuración de las aplicaciones y componentes para la creación y ejecución de una extensión Visual Studio Code.
+* _**VS Code**_ es un editor de código fuente desarrollado por Microsoft para Windows, Linux, macOS y Web.
+* _**Node.Js**_ es un motor JavaScript para el servidor. Se está convirtiendo poco a poco en la tecnología de servidor por excelencia.
+* _**TypeScript**_ es un lenguaje basado sobre JavaScript (un superset) y desarrollado también por Microsoft (al igual que Visual Studio Code). Se parece enormemente a JavaScript, ya que solo añade lo justo para que JavaScript sea un lenguaje más seguro.
+* _**Yeoman**_ es una aplicación para generar el esqueleto inicial de un proyecto web. Utiliza a su vez generadores para cada tipo de proyecto (web estáticas, páginas que usen jQuery, programas basados en Node, etc.). Yeoman está escrito, a su vez, en JavaScript.
+* _**Generator-code**_ es uno de estos generadores para Yeoman y sirve para comenzar el desarrollo de una extensión para Visual Studio Code.
 
-This is the README for your extension "gapline". After writing up a brief description, we recommend including the following sections.
+## Instalación
 
-## Features
+### Visual Studio Code
+La instalación de este software resulta sencilla. Únicamente tendremos que acceder al URL https://code.visualstudio.com/#alt-downloads, seleccionar el instalador que requerimos y, una vez terminada su descarga, ejecutaremos su instalador.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Node.js
+Igual que con la instalación de VS Code, únicamente tendremos que acceder al URL https://nodejs.org/en/download/current/, seleccionar el instalador que requerimos y, una vez terminada su descarga, ejecutaremos su instalador.
+Podemos comprobar si su instalación se realizo de manera correcta al abrir consola o la terminal de VS Code y escribir el comando ``node``.
 
-For example if there is an image subfolder under your extension project workspace:
+### Paquetes npm
+Se requerirá el uso de dos paquetes npm 
+1. **Yeoman**
+Esta paqueteria nos ayuda a poner en marcha nuevos proyectos web proporcionando un ecosistema de generadores para cada tipo de proyectos (web estáticas, paginas que usen jQuery, programas basados en Node). Un generador es un plugin que puede ser ejecutado con el comando ``yo`` para armar proyectos.
+2. **Generator-Code**
+El generador de Yeoman nos guiara a través de los pasos necesarios para crear nuestra personalización o extensión solicitando la información requerida.
 
-\!\[feature X\]\(images/feature-x.png\)
+Para poder instalar ambos paguetes, escribiremos en a terminal el comando ``npm install-g yo generator-code typescript``
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Desarrollo
+Para la creación del témplate de la nueva extensión utilizaremos el comando ``yo code`` que ejecutara el generador de extensiones para VS Code y aplicaremos la configuración requerida.
 
-## Requirements
+Se sustituirá el contenido del archivo _extensión.ts_ por el siguiente código que es referente al funcionamiento de la extensión que queremos utilizar
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+```typescript
+'use strict';
 
-## Extension Settings
+import * as vscode from 'vscode';
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('extension.gapline', () => {
+        var editor = vscode.window.activeTextEditor;
+        if (!editor) { return; }
+        var selection = editor.selection;
+        var text = editor.document.getText(selection);
+        vscode.window.showInputBox({ prompt: 'Lineas?' }).then(value => {
+            let numberOfLines = +value;
+            var textInChunks: Array<string> = [];
+            text.split('\n').forEach((currentLine: string, lineIndex) => {
+                textInChunks.push(currentLine);
+                if ((lineIndex+1) % numberOfLines === 0) textInChunks.push('');
+            });
+            text = textInChunks.join('\n');
+            editor.edit((editBuilder) => {
+                var range = new vscode.Range(
+                    selection.start.line, 0, 
+                    selection.end.line,
+                    editor.document.lineAt(selection.end.line).text.length
+                );
+                editBuilder.replace(range, text);
+            });
+        })
+    });
+    context.subscriptions.push(disposable);
+}
+export function deactivate() { }
+```
 
-For example:
+Así como se deberá de cambiar en el archivo _tsconfig.json_ el valor del _‘strict’_ 
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## Resultados
+Para poder ejecutar el codigo, deberemos seguir los siguientes pasos: 
+1. Presionar la tecla F5 o iniciar depuracion a traves del menu run.
+2. Tras abrir la ventana con la extension precargada, abriremos un fichero de texto, seleccionaremos su contenido y pulsaremos Ctrl + Shift + P e introduciremos el nombre de la extension (``Line Gapper``)
+3. Al ubicar la extension, nos solicitara cada cuantas lineas querremos inssertar la linea en blanco.
+4. Nos devolvera el resultado sobre el texto seleccionado
